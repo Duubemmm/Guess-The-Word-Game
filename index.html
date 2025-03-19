@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess The Word Game</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <main>
+        <div class="image-container">
+            <img src="Images/word-scramblle-logo.svg" alt="Word-Scramble Logo" class="logo">
+        </div>
+        <div class="container">
+            <section class="game-display">
+                <div class="display-area" aria-live="polite"></div>
+            </section>
+
+            <section class="missing-words">
+                <div class="word-buttons">
+                    <button aria-label="Word Option 1"></button>
+                    <button aria-label="Word Option 2"></button>
+                    <button aria-label="Word Option 3"></button>
+                    <button aria-label="Word Option 4"></button>
+                    <button aria-label="Word Option 5"></button>
+                </div>
+            </section>
+            <section class="game-input">
+                <div>
+                    <span class="update-score"></span>
+                    <span class="update-mistake"></span>
+                </div>
+            </section>
+
+            <section class="game-controls">
+                <div>
+                    <button class="random-button">Random</button>
+                    <button class="reset-button">Reset</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2023 Guess The Number Game</p>
+        </div>
+    </footer>
+
+    <script src="./main.js"></script>
+</body>
+</html>
