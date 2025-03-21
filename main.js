@@ -1,75 +1,164 @@
 const randomButton = document.querySelector('.random-button');
 const resetButton = document.querySelector('.reset-button');
-const buttonElement = document.querySelectorAll('.word-buttons button');
+const hintButton = document.querySelector('.hint-button');
+const wordButtonsContainer = document.querySelector('.word-buttons');
 const displayArea = document.querySelector('.display-area');
+const feedbackDiv = document.querySelector('.feedback');
+const triesDisplay = document.getElementById('tries');
+const mistakesDisplay = document.getElementById('mistakes');
+const timerDisplay = document.getElementById('time');
 
 const scrambledWord = [
     "flowers", "light", "water", "trees", "birds", "butterfly", 
     "rain", "clouds", "sun", "moon", "stars", "mountains", "beach"
 ];
 
-let currentWordIndex = 0;
+let currentWord = "";
+let scrambled = "";
+let userInput = "";
 let currentButtonIndex = 0;
 let tries = 0;
 let mistakes = 0;
+let timeLeft = 60;
+let timerInterval;
+const maxMistakes = 3;
+
+// Function to create buttons based on word length
+function createButtons(length) {
+    wordButtonsContainer.innerHTML = ""; // Clear existing buttons
+    for (let i = 0; i < length; i++) {
+        const button = document.createElement('button');
+        wordButtonsContainer.appendChild(button);
+    }
+}
 
 // Function to update button text based on user input
 function updateButtonIndex(event) {
-    if (currentButtonIndex < buttonElement.length) {
-        const key = event.key;
+    const key = event.key;
 
-        // Check if the key is a single character (letter or number)
+    if (key === "Backspace") {
+        // Handle backspace
+        if (currentButtonIndex > 0) {
+            currentButtonIndex--;
+            userInput = userInput.slice(0, -1); // Remove the last character
+            wordButtonsContainer.children[currentButtonIndex].textContent = ""; // Clear the button
+        }
+    } else if (currentButtonIndex < wordButtonsContainer.children.length) {
+        // Check if the key is a single character (letter)
         if (key.length === 1 && /[a-zA-Z]/.test(key)) {
-            buttonElement[currentButtonIndex].textContent = key.toUpperCase(); // Update the button text
+            wordButtonsContainer.children[currentButtonIndex].textContent = key.toLowerCase(); // Update the button text
+            userInput += key.toLowerCase(); // Add the key to the user's input
             currentButtonIndex++; // Move to the next button
+
+            // Check if all buttons are filled
+            if (currentButtonIndex === wordButtonsContainer.children.length) {
+                checkUserInput(); // Check if the user's input matches the original word
+            }
+        }
+    }
+}
+
+// Function to check the user's input
+function checkUserInput() {
+    if (userInput === currentWord) {
+        feedbackDiv.textContent = "Correct! Well done!";
+        feedbackDiv.style.color = "green";
+        tries++;
+        triesDisplay.textContent = tries;
+        generateRandomWord(); // Generate a new word
+    } else {
+        feedbackDiv.textContent = "Incorrect. Try again!";
+        feedbackDiv.style.color = "red";
+        mistakes++;
+        mistakesDisplay.textContent = mistakes;
+
+        // Check if the user has reached the maximum number of mistakes
+        if (mistakes >= maxMistakes) {
+            feedbackDiv.textContent = "Game Over! You've reached the maximum number of mistakes.";
+            feedbackDiv.style.color = "red";
+            resetGame();
         }
     }
 }
 
 // Function to scramble a word
 function scrambleWord(word) {
-    const letters = word.split(""); // Convert the word into an array of letters
+    const letters = word.split("");
     for (let i = letters.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1)); // Random index
-        [letters[i], letters[j]] = [letters[j], letters[i]]; // Swap letters
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]];
     }
-    return letters.join(""); // Convert the array back into a string
+    return letters.join("");
 }
 
 // Function to generate and display a random word
 function generateRandomWord() {
-    const randomIndex = Math.floor(Math.random() * scrambledWord.length); // Pick a random word
-    const randomWord = scrambledWord[randomIndex]; // Set the current word
-    const scrambled = scrambleWord(randomWord); // Scramble the word
-    displayArea.textContent = scrambled; // Display the scrambled word
-    resetButtons(); // Clear the buttons for the new word
+    const randomIndex = Math.floor(Math.random() * scrambledWord.length);
+    currentWord = scrambledWord[randomIndex];
+    scrambled = scrambleWord(currentWord);
+    displayArea.textContent = scrambled;
+    createButtons(currentWord.length); // Create buttons based on word length
+    resetButtons();
 }
 
 // Function to reset the buttons
 function resetButtons() {
-    buttonElement.forEach(button => {
-        button.textContent = ""; // Clear all button text
+    userInput = "";
+    currentButtonIndex = 0;
+    Array.from(wordButtonsContainer.children).forEach(button => {
+        button.textContent = "";
     });
-    currentButtonIndex = 0; // Reset the index
+    feedbackDiv.textContent = "";
 }
 
 // Function to reset the game
 function resetGame() {
-    resetButtons(); // Clear the buttons
-    displayArea.textContent = ""; // Clear the displayed word
-    tries = 0; // Reset tries
-    mistakes = 0; // Reset mistakes
-    console.log("Game reset. Ready for a new word!");
+    resetButtons();
+    displayArea.textContent = "";
+    tries = 0;
+    mistakes = 0;
+    triesDisplay.textContent = tries;
+    mistakesDisplay.textContent = mistakes;
+    feedbackDiv.textContent = "Game reset. Ready for a new word!";
+    feedbackDiv.style.color = "blue";
+    clearInterval(timerInterval);
+    timeLeft = 60;
+    timerDisplay.textContent = timeLeft;
+    startTimer();
 }
 
-// Event listener for keydown events
+// Function to start the timer
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            feedbackDiv.textContent = "Time's up! Game over.";
+            feedbackDiv.style.color = "red";
+        }
+    }, 1000);
+}
+
+// Function to provide a hint
+function provideHint() {
+    const emptyButtonIndex = Array.from(wordButtonsContainer.children).findIndex(
+        button => button.textContent === ""
+    );
+    if (emptyButtonIndex !== -1) {
+        const correctLetter = currentWord[emptyButtonIndex];
+        wordButtonsContainer.children[emptyButtonIndex].textContent = correctLetter;
+        userInput += correctLetter;
+        currentButtonIndex++;
+    }
+}
+
+// Event listeners
 document.addEventListener("keydown", updateButtonIndex);
+randomButton.addEventListener("click", generateRandomWord);
+resetButton.addEventListener("click", resetGame);
+hintButton.addEventListener("click", provideHint);
 
-// Event listener for the Random button
-randomButton.addEventListener('click', generateRandomWord);
-
-// Event listener for the Reset button
-resetButton.addEventListener('click', resetGame);
-
-// Initial load (optional)
+// Initial load
 generateRandomWord();
+startTimer();
