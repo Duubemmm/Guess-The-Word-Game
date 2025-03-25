@@ -1,59 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guess The Word Game</title>
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
     <main>
-        <div class="image-container">
-            <img src="Images/word-scramblle-logo.svg" alt="Word-Scramble Logo" class="logo">
-        </div>
-        <div class="container">
-            <section class="game-display">
-                <div class="display-area" aria-live="polite"></div>
-            </section>
+      <div class="image-container">
+        <img
+          src="Images/word-scramblle-logo.svg"
+          alt="Word-Scramble Logo"
+          class="logo"
+        />
+      </div>
+      <div class="container">
+        <section class="game-display">
+          <div class="display-area" aria-live="polite"></div>
+        </section>
 
-            <section class="game-input">
-                <div>
-                    <div class="feedback"></div> <!-- For feedback messages -->
-    <div class="score">Tries: <span id="tries">0</span></div> <!-- For tries -->
-    <div class="mistakes">Mistakes: <span id="mistakes">0</span></div> 
-    <div class="timer">Time Left: <span id="time">60</span>s</div> <!-- Timer -->
-                    <!-- <span class="feedback"></span>
-                    <span class="update-score"></span>
-                    <span class="update-mistake"></span> -->
-                </div>
-            </section>
+        <section class="game-input">
+          <div class="feedback"></div>
+          <!-- For feedback messages -->
 
-            <section class="missing-words">
-                <div class="word-buttons">
-                    <button aria-label="Word Option 1"></button>
-                    <button aria-label="Word Option 2"></button>
-                    <button aria-label="Word Option 3"></button>
-                    <button aria-label="Word Option 4"></button>
-                    <button aria-label="Word Option 5"></button>
-                </div>
-            </section>
+          <div class="score-sheet">
+            <!-- Flex container -->
+            <!-- Tries Section -->
+            <div class="score">
+              <span>Tries: <span id="tries"> 0</span></span>
+              <span class="tries-progress"></span>
+              <!-- Dotted radio button for tries -->
+            </div>
 
-            <section class="game-controls">
-                <div>
-                    <button class="random-button">Random</button>
-                    <button class="reset-button">Reset</button>
-                    <button class="hint-button">Hint</button> <!-- Hint button -->
-                </div>
-            </section>
-        </div>
+            <!-- Mistakes Section -->
+            <div class="mistakes">
+              <span>Oops!: <span id="mistakes"> 0</span></span>
+              <span class="mistakes-list" id="wrong-letters"></span>
+              <!-- For wrong letters -->
+            </div>
+          </div>
+        </section>
+
+        <section class="missing-words">
+          <div class="word-buttons">
+            <button aria-label="Word Option 1"></button>
+            <button aria-label="Word Option 2"></button>
+            <button aria-label="Word Option 3"></button>
+            <button aria-label="Word Option 4"></button>
+            <button aria-label="Word Option 5"></button>
+          </div>
+        </section>
+
+        <section class="game-controls">
+          <div>
+            <button class="random-button">Random</button>
+            <button class="reset-button">Reset</button>
+            <button class="hint-button">Hint</button>
+            <button class="timer">Time Left: <span id="time">60</span>s</button>
+          </div>
+        </section>
+      </div>
     </main>
-
-    <footer>
-        <div class="container">
-            <p>© 2023 Guess The Number Game</p>
-        </div>
-    </footer>
-
     <script src="./main.js"></script>
-</body>
+  </body>
 </html>
